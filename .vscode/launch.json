@@ -1,0 +1,25 @@
+{
+	"version": "1.0.0",
+	"configurations": [
+		{
+			"name": "Debug Backend Server",
+			"type": "node",
+			"request": "launch",
+			"runtimeExecutable": "nodemon",
+			"program": "${workspaceRoot}/backend/bin/www.js",
+			"console": "integratedTerminal",
+			"cwd": "${workspaceRoot}/backend",
+			"skipFiles": ["${workspaceFolder}/node_modules/**", "<node_internals>/**"]
+		},
+		{
+			"name": "Debug Frontend",
+			"request": "launch",
+			"type": "chrome",
+			"url": "http://localhost:8080/",
+			"webRoot": "${workspaceFolder}/frontend",
+			"sourceMapPathOverrides": {
+				"webpack:///src/": "${webRoot}/"
+			}
+		}
+	]
+}

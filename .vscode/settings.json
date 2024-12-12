@@ -1,0 +1,22 @@
+{
+	"editor.formatOnSave": true,
+	"editor.tabSize": 4,
+	"editor.autoClosingBrackets": "always",
+	"editor.bracketPairColorization.enabled": true,
+	"editor.defaultFormatter": "esbenp.prettier-vscode",
+	"[sql]": {
+		"editor.defaultFormatter": "adpyke.vscode-sql-formatter"
+	},
+	"[javascript]": {
+		"editor.defaultFormatter": "esbenp.prettier-vscode"
+	},
+	"[vue]": {
+		"editor.defaultFormatter": "esbenp.prettier-vscode"
+	},
+	"[dotenv]": {
+		"editor.defaultFormatter": "foxundermoon.shell-format"
+	},
+	"[html]": {
+		"editor.defaultFormatter": "esbenp.prettier-vscode"
+	}
+}
