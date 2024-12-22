@@ -1,7 +1,7 @@
 import request from "supertest";
 import { app } from "../../app";
 import mongoose from "mongoose";
-import { Ticket } from "../../models/ticket";
+import { queueWrapper } from "../../queue-wrapper"; // jest would make sure we import our mock version
 
 it("returns a 404 if the provided id does not exists", async () => {
   const id = new mongoose.Types.ObjectId().toHexString();
@@ -85,4 +85,22 @@ it("update the ticket provided valid inputs", async () => {
     .send();
   expect(updatedTicket.body.title).toEqual(updateTicketPayload.title);
   expect(updatedTicket.body.price).toEqual(updateTicketPayload.price);
+});
+
+it("pulishes an event", async () => {
+  const cookie = global.signin();
+  const ticketPayload = { title: "title", price: 100 };
+  const updateTicketPayload = { title: "updated_title", price: 10 };
+  const response = await request(app)
+    .post("/api/tickets")
+    .set("Cookie", cookie)
+    .send(ticketPayload);
+
+  await request(app)
+    .put(`/api/tickets/${response.body.id}`)
+    .set("Cookie", cookie)
+    .send(updateTicketPayload)
+    .expect(200);
+
+  expect(queueWrapper.client.publish).toHaveBeenCalled();
 });

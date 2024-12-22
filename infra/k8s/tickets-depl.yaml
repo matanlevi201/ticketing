@@ -16,6 +16,14 @@ spec:
         - name: tickets
           image: matanlevi201/tickets
           env:
+            - name: QUEUE_CLIENT_ID
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: QUEUE_URL
+              value: "http://nats-srv:4222"
+            - name: QUEUE_CLUSTER_ID
+              value: ticket
             - name: DB_URI
               value: "mongodb://tickets-mongo-srv:27017/tickets"
             - name: JWT_KEY

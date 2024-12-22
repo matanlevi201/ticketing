@@ -7,6 +7,8 @@ import {
 } from "@mlgittix/common";
 import { body } from "express-validator";
 import { Ticket } from "../models/ticket";
+import { TicketUpdatedPublisher } from "../events/publishers/ticket-updated-publisher";
+import { queueWrapper } from "../queue-wrapper";
 
 const router = express.Router();
 const validations = [
@@ -35,6 +37,12 @@ router.put(
     }
     ticket.set({ title, price });
     await ticket.save();
+    new TicketUpdatedPublisher(queueWrapper.client).publish({
+      id: ticket.id,
+      userId: ticket.userId,
+      title: ticket.title,
+      price: ticket.price,
+    });
     res.send(ticket);
   }
 );

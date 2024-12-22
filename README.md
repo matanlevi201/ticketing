@@ -1,4 +1,4 @@
-# Hoests Tweak
+# Hosts Tweak
 
 1. Open a text editor in administration mode.
 2. Open the file: `C:\Windows\System32\drivers\etc\hosts`.

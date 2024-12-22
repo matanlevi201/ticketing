@@ -2,6 +2,8 @@ import express, { Request, Response } from "express";
 import { requireAuth, validateRequest } from "@mlgittix/common";
 import { body } from "express-validator";
 import { Ticket } from "../models/ticket";
+import { queueWrapper } from "../queue-wrapper";
+import { TicketCreatedPublisher } from "../events/publishers/ticket-created-publisher";
 
 const router = express.Router();
 const validations = [
@@ -22,6 +24,12 @@ router.post(
     const { title, price } = req.body;
     const ticket = Ticket.build({ title, price, userId: req.currentUser!.id });
     await ticket.save();
+    await new TicketCreatedPublisher(queueWrapper.client).publish({
+      id: ticket.id,
+      userId: ticket.userId,
+      title: ticket.title,
+      price: ticket.price,
+    });
     res.status(201).send(ticket);
   }
 );
