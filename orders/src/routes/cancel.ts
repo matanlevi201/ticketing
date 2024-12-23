@@ -6,6 +6,8 @@ import {
 } from "@mlgittix/common";
 import express, { Request, Response } from "express";
 import { Order } from "../models/order";
+import { OrderCancelledPublisher } from "../events/publishers/order-cancelled-publisher";
+import { queueWrapper } from "../queue-wrapper";
 
 const router = express.Router();
 
@@ -14,7 +16,7 @@ router.patch(
   requireAuth,
   async (req: Request, res: Response) => {
     const { id } = req.params;
-    const order = await Order.findById(id);
+    const order = await Order.findById(id).populate("ticket");
     if (!order) {
       throw new NotFoundError();
     }
@@ -25,7 +27,10 @@ router.patch(
     order.status = OrderStatus.Cancelled;
     await order.save();
 
-    // Publish an event saying this order was cancelled
+    new OrderCancelledPublisher(queueWrapper.client).publish({
+      id: order.id,
+      ticket: { id: order.ticket.id },
+    });
 
     res.send(order);
   }

@@ -4,6 +4,7 @@ import { Ticket } from "../../models/ticket";
 import mongoose from "mongoose";
 import { OrderStatus } from "@mlgittix/common";
 import { Order } from "../../models/order";
+import { queueWrapper } from "../../queue-wrapper";
 
 it("returns 404 if an order was not found", async () => {
   const fakeOrderId = new mongoose.Types.ObjectId();
@@ -58,4 +59,28 @@ it("marks an order as cancelled", async () => {
   expect(updatedOrder!.status).toEqual(OrderStatus.Cancelled);
 });
 
-it.todo("emit an event on order cancelletion");
+it("emit an event on order cancelletion", async () => {
+  const ticket = Ticket.build({
+    title: "concert",
+    price: 20,
+  });
+  await ticket.save();
+
+  const user = global.signin();
+
+  const { body: orderBody } = await request(app)
+    .post("/api/orders")
+    .set("Cookie", user)
+    .send({ ticketId: ticket.id })
+    .expect(201);
+
+  await request(app)
+    .patch(`/api/orders/${orderBody.id}`)
+    .set("Cookie", user)
+    .expect(200);
+
+  const updatedOrder = await Order.findById(orderBody.id);
+
+  expect(updatedOrder!.status).toEqual(OrderStatus.Cancelled);
+  expect(queueWrapper.client.publish).toHaveBeenCalled();
+});
