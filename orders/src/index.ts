@@ -5,6 +5,7 @@ import { queueWrapper } from "./queue-wrapper";
 
 import { TicketCreatedListener } from "./events/listeners/ticket-created-listener";
 import { TicketUpdatedListener } from "./events/listeners/ticket-updated-listener";
+import { ExpirationCompleteListener } from "./events/listeners/expiration-complete-listener";
 
 const start = async () => {
   if (!process.env.JWT_KEY) {
@@ -37,6 +38,7 @@ const start = async () => {
     process.on("SIGTERM", () => queueWrapper.client.close());
     new TicketCreatedListener(queueWrapper.client).listen();
     new TicketUpdatedListener(queueWrapper.client).listen();
+    new ExpirationCompleteListener(queueWrapper.client).listen();
     await mongoose.connect(process.env.DB_URI);
     console.log("Connected to MongoDb");
   } catch (err) {
