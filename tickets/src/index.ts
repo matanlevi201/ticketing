@@ -2,6 +2,8 @@ import mongoose from "mongoose";
 
 import { app } from "./app";
 import { queueWrapper } from "./queue-wrapper";
+import OrderCancelledListener from "./events/listeners/order-cancelled-listener";
+import OrderCreatedListener from "./events/listeners/order-created-listener";
 
 const start = async () => {
   if (!process.env.JWT_KEY) {
@@ -32,6 +34,8 @@ const start = async () => {
     });
     process.on("SIGINT", () => queueWrapper.client.close());
     process.on("SIGTERM", () => queueWrapper.client.close());
+    new OrderCreatedListener(queueWrapper.client).listen();
+    new OrderCancelledListener(queueWrapper.client).listen();
     await mongoose.connect(process.env.DB_URI);
     console.log("Connected to MongoDb");
   } catch (err) {

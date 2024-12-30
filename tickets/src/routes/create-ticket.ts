@@ -26,6 +26,7 @@ router.post(
     await ticket.save();
     await new TicketCreatedPublisher(queueWrapper.client).publish({
       id: ticket.id,
+      version: ticket.version,
       userId: ticket.userId,
       title: ticket.title,
       price: ticket.price,

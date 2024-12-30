@@ -4,6 +4,7 @@ import {
   validateRequest,
   NotFoundError,
   NotAuthorizedError,
+  BadRequestError,
 } from "@mlgittix/common";
 import { body } from "express-validator";
 import { Ticket } from "../models/ticket";
@@ -35,10 +36,14 @@ router.put(
     if (ticket.userId !== req.currentUser?.id) {
       throw new NotAuthorizedError();
     }
+    if (ticket.orderId) {
+      throw new BadRequestError("Cannot update reserved ticket");
+    }
     ticket.set({ title, price });
     await ticket.save();
     new TicketUpdatedPublisher(queueWrapper.client).publish({
       id: ticket.id,
+      version: ticket.version,
       userId: ticket.userId,
       title: ticket.title,
       price: ticket.price,
