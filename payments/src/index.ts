@@ -2,11 +2,8 @@ import mongoose from "mongoose";
 
 import { app } from "./app";
 import { queueWrapper } from "./queue-wrapper";
-
-import { TicketCreatedListener } from "./events/listeners/ticket-created-listener";
-import { TicketUpdatedListener } from "./events/listeners/ticket-updated-listener";
-import { ExpirationCompleteListener } from "./events/listeners/expiration-complete-listener";
-import { PaymentCreatedListener } from "./events/listeners/payment-created-listener";
+import { OrderCancelledListener } from "./events/listeners/order-cancelled-listener";
+import { OrderCreatedListener } from "./events/listeners/order-created-listener";
 
 const start = async () => {
   if (!process.env.JWT_KEY) {
@@ -37,10 +34,8 @@ const start = async () => {
     });
     process.on("SIGINT", () => queueWrapper.client.close());
     process.on("SIGTERM", () => queueWrapper.client.close());
-    new TicketCreatedListener(queueWrapper.client).listen();
-    new TicketUpdatedListener(queueWrapper.client).listen();
-    new ExpirationCompleteListener(queueWrapper.client).listen();
-    new PaymentCreatedListener(queueWrapper.client).listen();
+    new OrderCreatedListener(queueWrapper.client).listen();
+    new OrderCancelledListener(queueWrapper.client).listen();
     await mongoose.connect(process.env.DB_URI);
     console.log("Connected to MongoDb");
   } catch (err) {
