@@ -36,6 +36,11 @@ spec:
                 secretKeyRef:
                   name: stripe-secret
                   key: STRIPE_KEY
+            - name: PUB_STRIPE_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: public-stripe-secret
+                  key: PUB_STRIPE_KEY
 ---
 apiVersion: v1
 kind: Service

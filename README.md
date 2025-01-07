@@ -63,4 +63,5 @@
 Follow the guide here: [Splitting Your Git Repo While Maintaining Commit History](https://amandawalkerbrubaker.medium.com/splitting-your-git-repo-while-maintaining-commit-history-35b9f4597514)
 
 kubectl create secret generic stripe-secret --from-literal STRIPE_KEY=<stripe_secret_key>
-kubectl create secret generic stripe-secret --from-literal JWT_KEY=<generate_jwt_key>
+kubectl create secret generic pub-stripe-secret --from-literal STRIPE_KEY=<stripe_secret_key>
+kubectl create secret generic jwt-secret --from-literal JWT_KEY=<generate_jwt_key>

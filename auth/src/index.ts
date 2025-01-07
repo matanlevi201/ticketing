@@ -19,7 +19,7 @@ const start = async () => {
   }
 
   app.listen(3000, () => {
-    console.log("Auth service is listening on port 3000!!!!!!!!");
+    console.log("service is listening on port 3000");
   });
 };
 

@@ -3,7 +3,9 @@ import "express-async-errors";
 import { json } from "body-parser";
 import cookieSession from "cookie-session";
 import { currentUser, errorHandler, NotFoundError } from "@mlgittix/common";
-import { createChargeRouter } from "./routes/create";
+import { getConfigRouter } from "./routes/config";
+import { createPaymentIntent } from "./routes/intent";
+import { recordPaymentRouter } from "./routes/record";
 
 const app = express();
 app.set("trust proxy", true);
@@ -16,7 +18,9 @@ app.use(
 );
 
 app.use(currentUser);
-app.use(createChargeRouter);
+app.use(getConfigRouter);
+app.use(createPaymentIntent);
+app.use(recordPaymentRouter);
 
 app.all("*", async (req, res) => {
   throw new NotFoundError();

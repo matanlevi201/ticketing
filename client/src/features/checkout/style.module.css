@@ -1,0 +1,9 @@
+.stripe_btn_night {
+  background-color: #85d996 !important;
+  color: #30313d !important;
+}
+
+.stripe_btn_night:hover {
+  background-color: #84cc7f !important;
+  color: #30313d !important;
+}

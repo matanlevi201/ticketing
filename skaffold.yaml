@@ -21,8 +21,10 @@ build:
         dockerfile: Dockerfile
       sync:
         manual:
-          - src: "**/*.js"
-            dest: .
+          - src: "src/**/*.{js,jsx,ts,tsx,css,scss}"
+            dest: /app/src
+          - src: "public/**/*"
+            dest: /app/public
     - image: matanlevi201/tickets
       context: tickets
       docker:
